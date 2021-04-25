@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include "PermissionException.h"
 #include <vector>
+#include <dirent.h>
+#include <grp.h>
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -18,15 +20,21 @@ namespace fs = std::filesystem;
 class CheckPermission {
 private:
     string getType(string path); // Get type of file: file or dir
-    string username, groupname, path; // This argument init by parseFlags
+    string userName, groupName, path; // This argument init by parseFlags
     vector<string> allPath;
-public:
-    void parseFlags(int args, char* argv[]); // Parse flag
-    void getPermission(); // Input on terminal
-    void changeUID();
-    void changeGID();
-    void changeId();
+
+    bool flagName = false;
+    bool flagGroup = false;
+
+    void changeUID(); // Change ID of user
+    void changeGID(); // Change ID of group
     bool checkAccess(string path);
+    void getPermission(char *path); // Output on terminal
+
+public:
+    void changeId(); // Change both ID
+    void getPermission();
+    void parseFlags(int args, char* argv[]); // Parse flag
 
     friend class TEST;
 };
