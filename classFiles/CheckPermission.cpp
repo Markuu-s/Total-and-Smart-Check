@@ -1,7 +1,7 @@
 #include "../headerFiles/CheckPermission.h"
 
 bool CheckPermission::checkAccess(string path) {
-    if (!access(path.c_str(), 2)) {
+    if (!access(path.c_str(), 4)) {
         return true;
     }
     return false;
@@ -23,9 +23,13 @@ void CheckPermission::getPermission(char *currentPath) {
                 strcat(path, entry->d_name);
                 if (stat(path, &info) == 0) {
                     if (S_ISDIR(info.st_mode)) {
-                        getPermission(path);
+                        if (checkAccess(path)) {
+                            getPermission(path);
+                        }
                     } else if (S_ISREG(info.st_mode)){
-                        cout << getType(path) << '\n';
+                        if (checkAccess(path)){
+                            cout << getType(path) << '\n';
+                        }
                     }
                 }
             }
