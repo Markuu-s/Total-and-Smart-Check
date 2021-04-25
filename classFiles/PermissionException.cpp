@@ -18,7 +18,3 @@ PermissionException::PermissionException(string error): m_error(std::move(error)
 const char *PermissionException::what() const noexcept {
     return m_error.c_str();
 }
-
-PermissionException::~PermissionException() {
-
-}

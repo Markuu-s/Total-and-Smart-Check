@@ -14,8 +14,6 @@ public:
     explicit PermissionException(string error);
     const char* getError();
     const char* what() const noexcept;
-
-    virtual ~PermissionException();
 };
 
 

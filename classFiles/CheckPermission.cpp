@@ -2,21 +2,27 @@
 #include "../headerFiles/CheckPermission.h"
 
 bool CheckPermission::checkAccess(string path) {
-    struct stat buf;
 
-    if (stat(path.c_str(), &buf) == -1){
-        throw PermissionException("checkAccess: Failed to retrieve data using stat()." );
+    if (!access(path.c_str(), 4)){
+        return true;
     }
+    return false;
 }
 
 void CheckPermission::getPermission() {
     struct stat buf;
-    for (const auto & entry : fs::recursive_directory_iterator(path)){
-        if (checkAccess(entry.path())) {
-            cout << getType(entry.path()) << '\n';
-        }
 
+    for (const auto &entry : fs::recursive_directory_iterator(path)) {
+        allPath.push_back(entry.path());
     }
+
+    changeUID();
+    for(auto& entry : allPath){
+        if (checkAccess(entry)) {
+            cout << getType(entry) << '\n';
+        }
+    }
+
 }
 
 string CheckPermission::getType(string path) {

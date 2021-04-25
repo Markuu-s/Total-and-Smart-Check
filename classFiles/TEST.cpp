@@ -7,9 +7,8 @@
 
 void TEST::start() {
     CheckPermission cp;
-    cp.path = "/home/mark/test";
-    cp.username = "mark";
-    cp.changeUID();
+    cp.path = "/home/mark/test1/";
+    cp.username = "Ruslan";
     cp.getPermission();
-    //cp.getPermission();
+
 }
