@@ -1,6 +1,7 @@
 #include "CheckPermission.h"
 
 void CheckPermission::getPermission() {
+    struct stat buf;
     for (const auto & entry : fs::recursive_directory_iterator(path)){
         cout << getType(entry.path()) << '\n';
     }
@@ -22,4 +23,23 @@ void CheckPermission::parseFlags(int args, char **argv) {
             path = argv[i + 1];
         }
     }
+}
+
+void CheckPermission::changeUID() {
+    cout << getuid() << '\n';
+    struct passwd *toChange = getpwnam(username.c_str());
+    setuid(toChange->pw_uid);
+    cout << getuid() << '\n';
+}
+
+void CheckPermission::changeGID() {
+    cout << getgid() << '\n';
+    struct passwd *toChange = getpwnam(groupname.c_str());
+    setgid(toChange->pw_uid);
+    cout << getgid() << '\n';
+}
+
+void CheckPermission::changeId() {
+    changeUID();
+    changeGID();
 }

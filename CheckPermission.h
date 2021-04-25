@@ -5,6 +5,12 @@
 #include <iostream>
 #include <filesystem>
 #include <cstring>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <pwd.h>
+#include <unistd.h>
+
 using namespace std;
 namespace fs = std::filesystem;
 
@@ -15,6 +21,11 @@ private:
 public:
     void parseFlags(int args, char* argv[]); // Parse flag
     void getPermission(); // Input on terminal
+    void changeUID();
+    void changeGID();
+    void changeId();
+
+    friend class TEST;
 };
 
 
