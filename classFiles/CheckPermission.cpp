@@ -7,7 +7,21 @@ bool CheckPermission::checkAccess(string path) {
     return false;
 }
 
+bool CheckPermission::check_sys_proc(string path) {
+    if (
+            path.substr(0, 4) == "/sys" && path.size() == 4 ||
+            path.substr(0, 5) == "/sys/" ||
+            path.substr(0, 5) == "/proc" && path.size() == 5 ||
+            path.substr(0, 6) == "/proc/") {
+        return true;
+    }
+    return false;
+}
+
 void CheckPermission::getPermission(char *currentPath) {
+    if (check_sys_proc(path)) {
+        return;
+    }
     DIR *dir;
     struct dirent *entry;
     char path[1024];
@@ -26,8 +40,8 @@ void CheckPermission::getPermission(char *currentPath) {
                         if (checkAccess(path)) {
                             getPermission(path);
                         }
-                    } else if (S_ISREG(info.st_mode)){
-                        if (checkAccess(path)){
+                    } else if (S_ISREG(info.st_mode)) {
+                        if (checkAccess(path)) {
                             cout << getType(path) << '\n';
                         }
                     }
@@ -70,7 +84,7 @@ void CheckPermission::changeUID() {
     struct passwd *toChange = getpwnam(userName.c_str());
     if (toChange) {
         setuid(toChange->pw_uid);
-    } else{
+    } else {
         throw PermissionException("User does not exist");
     }
 }
@@ -79,7 +93,7 @@ void CheckPermission::changeGID() {
     struct group *toChange = getgrnam(groupName.c_str());
     if (toChange) {
         setgid(toChange->gr_gid);
-    } else{
+    } else {
         throw PermissionException("Group does not exist");
     }
 }
@@ -93,7 +107,7 @@ void CheckPermission::changeId() {
         changeUID();
     }
 
-    if (!(flagName || flagGroup)){
+    if (!(flagName || flagGroup)) {
         throw PermissionException("Expected user name or group name");
     }
 }
