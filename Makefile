@@ -1,4 +1,4 @@
 all:
-	g++ -std=c++2a main.cpp classFiles/*.cpp headerFiles/*.h -o main
+	g++ -std=c++2a main.cpp classFiles/*.cpp headerFiles/*.h -o TSC
 clean:
-	rm -rf *.o main
+	rm -rf *.o TSC

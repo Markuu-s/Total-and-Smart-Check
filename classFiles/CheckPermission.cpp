@@ -1,7 +1,7 @@
 #include "../headerFiles/CheckPermission.h"
 
 bool CheckPermission::checkAccess(string path) {
-    if (!access(path.c_str(), 4)) {
+    if (!access(path.c_str(), 2)) {
         return true;
     }
     return false;
@@ -107,7 +107,7 @@ void CheckPermission::changeId() {
         changeUID();
     }
 
-    if (!(flagName || flagGroup)) {
+    if (!(flagName && flagGroup)) {
         throw PermissionException("Expected user name or group name");
     }
 }
