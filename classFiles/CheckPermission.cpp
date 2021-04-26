@@ -10,7 +10,7 @@ bool CheckPermission::checkAccess(string path) {
 void CheckPermission::getPermission(char *currentPath) {
     DIR *dir;
     struct dirent *entry;
-    char path[1025];
+    char path[1024];
     struct stat info;
 
     cout << getType(currentPath) << '\n';
@@ -41,13 +41,12 @@ void CheckPermission::getPermission(char *currentPath) {
 void CheckPermission::getPermission() {
     char *thisPath = const_cast<char *>(path.c_str());
     getPermission(thisPath);
-    //traverse(thisPath, 0);
 }
 
 string CheckPermission::getType(string path) {
     if (fs::is_regular_file(path)) return "f " + path;
     if (fs::is_directory(path)) return "d " + path;
-    return "ERROR PATH: " + path;
+    throw PermissionException("Error path");
 }
 
 void CheckPermission::parseFlags(int args, char **argv) {
@@ -68,13 +67,21 @@ void CheckPermission::parseFlags(int args, char **argv) {
 }
 
 void CheckPermission::changeUID() {
-    struct passwd *toChange = getpwnam(userName.c_str());;
-    setuid(toChange->pw_uid);
+    struct passwd *toChange = getpwnam(userName.c_str());
+    if (toChange) {
+        setuid(toChange->pw_uid);
+    } else{
+        throw PermissionException("User does not exist");
+    }
 }
 
 void CheckPermission::changeGID() {
     struct group *toChange = getgrnam(groupName.c_str());
-    setgid(toChange->gr_gid);
+    if (toChange) {
+        setgid(toChange->gr_gid);
+    } else{
+        throw PermissionException("Group does not exist");
+    }
 }
 
 void CheckPermission::changeId() {
@@ -84,5 +91,9 @@ void CheckPermission::changeId() {
 
     if (flagName) {
         changeUID();
+    }
+
+    if (!(flagName || flagGroup)){
+        throw PermissionException("Expected user name or group name");
     }
 }

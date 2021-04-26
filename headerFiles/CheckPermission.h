@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-    #include <filesystem>
+#include <filesystem>
 #include <cstring>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -21,7 +21,6 @@ class CheckPermission {
 private:
     string getType(string path); // Get type of file: file or dir
     string userName, groupName, path; // This argument init by parseFlags
-    vector<string> allPath;
 
     bool flagName = false;
     bool flagGroup = false;

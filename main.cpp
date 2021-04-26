@@ -8,10 +8,13 @@ int main(int argc, char *argv[]){
     t.start();
     return 0;
 */
-    CheckPermission cp;
-    cp.parseFlags(argc, argv);
-    cp.changeId();
-    cp.getPermission();
-
+    try {
+        CheckPermission cp;
+        cp.parseFlags(argc, argv);
+        cp.changeId();
+        cp.getPermission();
+    }catch (PermissionException e){
+        cout << e.getError() << '\n';
+    }
     return 0;
 }
