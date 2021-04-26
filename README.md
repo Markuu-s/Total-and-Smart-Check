@@ -10,7 +10,7 @@ For **amd64**:
 
 Or build the project
 
-- git clone https://github.com/Markuu-s/Avrora
+- git clone https://github.com/Markuu-s/Total-and-Smart-Check
 - make
 - ./TSC
 
