@@ -6,7 +6,7 @@ TSC (Total and Smart Check)
 INSTALLATION
 ------------
 For **amd64**:
-- Install the deb package
+- Install the deb package https://github.com/Markuu-s/Total-and-Smart-Check/releases/download/1.0/Total-and-Smart-Check_1.0-1_amd64.deb
 
 Or build the project
 
