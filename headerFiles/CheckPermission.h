@@ -28,7 +28,9 @@ private:
     void changeUID(); // Change ID of user
     void changeGID(); // Change ID of group
     bool checkAccess(string path);
-    void getPermission(char *path); // Output on terminal
+    void getPermission(string path); // Output on terminal
+
+    vector<string> allPath;
 
     bool check_sys_proc(string path);
 public:

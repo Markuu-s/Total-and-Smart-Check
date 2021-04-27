@@ -18,49 +18,30 @@ bool CheckPermission::check_sys_proc(string path) {
     return false;
 }
 
-void CheckPermission::getPermission(char *currentPath) {
-    if (check_sys_proc(path)) {
-        return;
+void CheckPermission::getPermission(string currentPath) {
+    for (const auto &entry : fs::recursive_directory_iterator(path,
+                                                              std::filesystem::directory_options::skip_permission_denied)) {
+        allPath.push_back(entry.path());
     }
-    DIR *dir;
-    struct dirent *entry;
-    char path[1024];
-    struct stat info;
 
-    cout << getType(currentPath) << '\n';
-
-    if ((dir = opendir(currentPath)) != nullptr) {
-        while ((entry = readdir(dir)) != nullptr) {
-            if (entry->d_name[0] != '.') {
-                strcpy(path, currentPath);
-                strcat(path, "/");
-                strcat(path, entry->d_name);
-                if (stat(path, &info) == 0) {
-                    if (S_ISDIR(info.st_mode)) {
-                        if (checkAccess(path)) {
-                            getPermission(path);
-                        }
-                    } else if (S_ISREG(info.st_mode)) {
-                        if (checkAccess(path)) {
-                            cout << getType(path) << '\n';
-                        }
-                    }
-                }
-            }
+    changeId();
+    for(auto& entry : allPath){
+        if (checkAccess(entry) && !check_sys_proc(entry)) {
+            cout << getType(entry) << '\n';
         }
-        closedir(dir);
     }
 }
 
 void CheckPermission::getPermission() {
     char *thisPath = const_cast<char *>(path.c_str());
-    getPermission(thisPath);
+    getPermission(path);
 }
 
 string CheckPermission::getType(string path) {
     if (fs::is_regular_file(path)) return "f " + path;
     if (fs::is_directory(path)) return "d " + path;
-    throw PermissionException("Error path");
+    return "f " + path;
+    //throw PermissionException("Error path");
 }
 
 void CheckPermission::parseFlags(int args, char **argv) {
@@ -73,7 +54,7 @@ void CheckPermission::parseFlags(int args, char **argv) {
             flagGroup = true;
         } else if (strcmp(argv[i], "-p") == 0) {
             path = argv[i + 1];
-            if (path.back() == '/') {
+            if (path.back() == '/' && path.size() > 1) {
                 path.pop_back();
             }
         }
