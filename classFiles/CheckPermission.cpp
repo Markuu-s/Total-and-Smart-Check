@@ -27,9 +27,6 @@ void CheckPermission::getPermission(string currentPath) {
     struct dirent *entry;
     string path;
     struct stat info;
-    if (currentPath != this->path) {
-        cout << getType(currentPath) << '\n';
-    }
 
     if ((dir = opendir(currentPath.c_str())) != nullptr) {
         while ((entry = readdir(dir)) != nullptr) {
@@ -42,24 +39,28 @@ void CheckPermission::getPermission(string currentPath) {
 
                 if (stat(path.c_str(), &info) == 0) {
                     if (S_ISDIR(info.st_mode)) {
+                        if (currentPath != this->path) {
+                            cout << "d " + path + '\n';
+                        }
                         if (checkAccess(path)) {
                             getPermission(path);
                         }
-                    } else if (S_ISREG(info.st_mode)) {
+
+                    } else{
                         if (checkAccess(path)) {
-                            cout << getType(path) << '\n';
+                            cout << "f " + path + '\n';
                         }
                     }
                 }
             }
         }
-        closedir(dir);
     }
+    closedir(dir);
 }
 
 void CheckPermission::getPermission() {
     char *thisPath = const_cast<char *>(path.c_str());
-    getPermission(thisPath);
+    getPermission(path);
 }
 
 string CheckPermission::getType(string path) {
@@ -78,7 +79,7 @@ void CheckPermission::parseFlags(int args, char **argv) {
             flagGroup = true;
         } else if (strcmp(argv[i], "-p") == 0) {
             path = argv[i + 1];
-            if (path.back() == '/') {
+            if (path.back() == '/' && path.size() > 1) {
                 path.pop_back();
             }
         }

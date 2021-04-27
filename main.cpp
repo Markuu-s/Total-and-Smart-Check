@@ -4,10 +4,10 @@ using namespace std;
 
 int main(int argc, char *argv[]){
 
-    TEST t;
+/*    TEST t;
     t.start();
     return 0;
-
+*/
     try {
         CheckPermission cp;
         cp.parseFlags(argc, argv);

@@ -3,8 +3,8 @@
 void TEST::start() {
     CheckPermission cp;
     cp.path = "/";
-    cp.userName = "Ruslan";
-    cp.groupName = "storage";
+    cp.userName = "mark";
+    cp.groupName = "sudo";
     cp.getPermission();
 
 }
