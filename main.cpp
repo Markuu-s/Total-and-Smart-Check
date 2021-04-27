@@ -11,7 +11,7 @@ int main(int argc, char *argv[]){
     try {
         CheckPermission cp;
         cp.parseFlags(argc, argv);
-        cp.changeId();
+        //cp.changeId();
         cp.getPermission();
     }catch (PermissionException e){
         cout << e.getError() << '\n';

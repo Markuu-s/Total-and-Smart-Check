@@ -30,6 +30,8 @@ private:
     bool checkAccess(string path);
     void getPermission(string path); // Output on terminal
 
+    vector<string> allPath;
+
     bool check_sys_proc(string path);
 public:
     void changeId(); // Change both ID

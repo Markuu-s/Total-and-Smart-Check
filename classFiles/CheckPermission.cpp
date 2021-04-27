@@ -19,43 +19,17 @@ bool CheckPermission::check_sys_proc(string path) {
 }
 
 void CheckPermission::getPermission(string currentPath) {
-    if (check_sys_proc(currentPath)) {
-        return;
+    for (const auto &entry : fs::recursive_directory_iterator(path,
+                                                              std::filesystem::directory_options::skip_permission_denied)) {
+        allPath.push_back(entry.path());
     }
 
-    DIR *dir;
-    struct dirent *entry;
-    string path;
-    struct stat info;
-
-    if ((dir = opendir(currentPath.c_str())) != nullptr) {
-        while ((entry = readdir(dir)) != nullptr) {
-            if (entry->d_name[0] != '.') {
-                path = currentPath;
-                if (currentPath != "/") {
-                    path += "/";
-                }
-                path += entry->d_name;
-
-                if (stat(path.c_str(), &info) == 0) {
-                    if (S_ISDIR(info.st_mode)) {
-                        if (currentPath != this->path) {
-                            cout << "d " + path + '\n';
-                        }
-                        if (checkAccess(path)) {
-                            getPermission(path);
-                        }
-
-                    } else{
-                        if (checkAccess(path)) {
-                            cout << "f " + path + '\n';
-                        }
-                    }
-                }
-            }
+    changeId();
+    for(auto& entry : allPath){
+        if (checkAccess(entry) && !check_sys_proc(entry)) {
+            cout << getType(entry) << '\n';
         }
     }
-    closedir(dir);
 }
 
 void CheckPermission::getPermission() {
@@ -66,7 +40,8 @@ void CheckPermission::getPermission() {
 string CheckPermission::getType(string path) {
     if (fs::is_regular_file(path)) return "f " + path;
     if (fs::is_directory(path)) return "d " + path;
-    throw PermissionException("Error path");
+    return "f " + path;
+    //throw PermissionException("Error path");
 }
 
 void CheckPermission::parseFlags(int args, char **argv) {
