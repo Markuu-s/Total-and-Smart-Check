@@ -18,24 +18,29 @@ bool CheckPermission::check_sys_proc(string path) {
     return false;
 }
 
-void CheckPermission::getPermission(char *currentPath) {
-    if (check_sys_proc(path)) {
+void CheckPermission::getPermission(string currentPath) {
+    if (check_sys_proc(currentPath)) {
         return;
     }
+
     DIR *dir;
     struct dirent *entry;
-    char path[1024];
+    string path;
     struct stat info;
+    if (currentPath != this->path) {
+        cout << getType(currentPath) << '\n';
+    }
 
-    cout << getType(currentPath) << '\n';
-
-    if ((dir = opendir(currentPath)) != nullptr) {
+    if ((dir = opendir(currentPath.c_str())) != nullptr) {
         while ((entry = readdir(dir)) != nullptr) {
             if (entry->d_name[0] != '.') {
-                strcpy(path, currentPath);
-                strcat(path, "/");
-                strcat(path, entry->d_name);
-                if (stat(path, &info) == 0) {
+                path = currentPath;
+                if (currentPath != "/") {
+                    path += "/";
+                }
+                path += entry->d_name;
+
+                if (stat(path.c_str(), &info) == 0) {
                     if (S_ISDIR(info.st_mode)) {
                         if (checkAccess(path)) {
                             getPermission(path);

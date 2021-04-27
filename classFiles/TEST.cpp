@@ -2,7 +2,7 @@
 
 void TEST::start() {
     CheckPermission cp;
-    cp.path = "/home/mark/test1";
+    cp.path = "/";
     cp.userName = "Ruslan";
     cp.groupName = "storage";
     cp.getPermission();
